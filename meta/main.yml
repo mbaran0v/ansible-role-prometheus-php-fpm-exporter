@@ -18,7 +18,8 @@ galaxy_info:
     - monitoring
     - prometheus
     - exporter
-    - php-fpm
+    - php
+    - phpfpm
     - metrics
     - system
 
