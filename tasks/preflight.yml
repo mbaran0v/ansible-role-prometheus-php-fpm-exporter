@@ -1,0 +1,13 @@
+---
+
+- name: Naive assertion for ansible_service_mgr (fail on unsupported init systems)
+  assert:
+    that:
+      - ansible_service_mgr == "systemd"
+    fail_msg: "this role work only with systemd distributives"
+
+- name: Get checksum for {{ go_arch }} architecture
+  set_fact:
+    phpfpm_exporter_checksum: "{{ item.split(' ')[0] }}"
+  with_items:
+    - "{{ lookup('url', phpfpm_exporter_download_url + '.sha256.txt', wantlist=True) | list }}"

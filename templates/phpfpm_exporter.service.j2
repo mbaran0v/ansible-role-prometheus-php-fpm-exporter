@@ -1,0 +1,24 @@
+[Unit]
+Description=Prometheus PHP-FPM Exporter
+Documentation=https://github.com/bakins/php-fpm-exporter
+After=network.target
+
+[Service]
+Type=simple
+User={{ phpfpm_exporter_user }}
+Group={{ phpfpm_exporter_group }}
+
+ExecStart={{ deploy_helper.new_release_path }}/{{ phpfpm_exporter_extracted_file }} \
+    --addr {{ phpfpm_exporter_listen_address }}:{{ phpfpm_exporter_listen_port }} \
+    --endpoint {{ phpfpm_exporter_http_endpoint }}
+
+SyslogIdentifier=phpfpm_exporter
+Restart=always
+CapabilityBoundingSet=
+PrivateTmp=true
+PrivateDevices=true
+ProtectHome=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

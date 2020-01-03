@@ -1,0 +1,76 @@
+---
+
+- name: Create the phpfpm_exporter group
+  group:
+    name: "{{ phpfpm_exporter_group }}"
+    state: present
+    system: true
+  when: phpfpm_exporter_user_create|bool
+
+- name: Create the phpfpm_exporter user
+  user:
+    name: "{{ phpfpm_exporter_user }}"
+    group: "{{ phpfpm_exporter_group }}"
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+    home: "{{ phpfpm_exporter_root_dir }}"
+  when: phpfpm_exporter_user_create|bool
+
+- name: create phpfpm_exporter directories
+  file:
+    path: "{{ phpfpm_exporter_root_dir }}"
+    state: directory
+    owner: "{{ phpfpm_exporter_user }}"
+    group: "{{ phpfpm_exporter_group }}"
+    mode: 0750
+
+- name: check if installed
+  stat:
+    path: "{{ phpfpm_exporter_root_dir }}/releases/{{ phpfpm_exporter_version }}/{{ phpfpm_exporter_extracted_file }}"
+  register: phpfpm_exporter_bin
+
+- name: initialize the deploy root and gather facts
+  deploy_helper:
+    path: "{{ phpfpm_exporter_root_dir }}"
+    release: "{{ phpfpm_exporter_version }}"
+    state: present
+
+- name: create release directory
+  file:
+    dest: "{{ deploy_helper.new_release_path }}"
+    state: directory
+    owner: "{{ phpfpm_exporter_user }}"
+    group: "{{ phpfpm_exporter_group }}"
+    mode: 0750
+
+- name: download release
+  get_url:
+    url: "{{ phpfpm_exporter_download_url }}"
+    dest: "{{ deploy_helper.new_release_path }}/{{ phpfpm_exporter_extracted_file }}"
+    remote_src: true
+    checksum: "sha256:{{ phpfpm_exporter_checksum }}"
+    owner: "{{ phpfpm_exporter_user }}"
+    group: "{{ phpfpm_exporter_group }}"
+    mode: 0755
+  register: _download_release
+  until: _download_release is succeeded
+  retries: 5
+  delay: 2
+  when: not phpfpm_exporter_bin.stat.exists or phpfpm_exporter_force_install|bool
+
+- name: create systemd service unit
+  template:
+    src: phpfpm_exporter.service.j2
+    dest: /etc/systemd/system/phpfpm_exporter.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart phpfpm_exporter
+
+- name: finalize the deploy, removing the unfinished file and switching the symlink
+  deploy_helper:
+    path: "{{ phpfpm_exporter_root_dir }}"
+    release: "{{ deploy_helper.new_release }}"
+    state: finalize
+  notify: restart phpfpm_exporter

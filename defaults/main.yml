@@ -1,0 +1,18 @@
+---
+
+phpfpm_exporter_version: 0.6.1
+phpfpm_exporter_listen_address: 0.0.0.0
+phpfpm_exporter_listen_port: 8080
+
+phpfpm_exporter_download_url: "https://github.com/bakins/php-fpm-exporter/releases/download/v{{ phpfpm_exporter_version }}/{{ phpfpm_exporter_extracted_file }}"
+phpfpm_exporter_extracted_file: "php-fpm-exporter.linux.{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+
+phpfpm_exporter_force_install: false
+
+phpfpm_exporter_root_dir: /opt/phpfpm_exporter
+
+phpfpm_exporter_user_create: true
+phpfpm_exporter_user: phpfpm-exp
+phpfpm_exporter_group: "{{ phpfpm_exporter_user }}"
+
+phpfpm_exporter_http_endpoint: http://127.0.0.1:9000/status
