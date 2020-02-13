@@ -6,6 +6,12 @@
       - ansible_service_mgr == "systemd"
     fail_msg: "this role work only with systemd distributives"
 
+- name: Naive assertion for endpoint variable
+  assert:
+    that:
+      - phpfpm_exporter_http_endpoint is defined or phpfpm_exporter_fastcgi_endpoint is defined
+    fail_msg: "phpfpm_exporter_http_endpoint or phpfpm_exporter_fastcgi_endpoint is required"
+
 - name: Get checksum for {{ go_arch }} architecture
   set_fact:
     phpfpm_exporter_checksum: "{{ item.split(' ')[0] }}"

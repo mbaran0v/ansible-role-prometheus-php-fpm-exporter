@@ -15,4 +15,8 @@ phpfpm_exporter_user_create: true
 phpfpm_exporter_user: phpfpm-exp
 phpfpm_exporter_group: "{{ phpfpm_exporter_user }}"
 
-phpfpm_exporter_http_endpoint: http://127.0.0.1:9000/status
+# fasctgi endpoint will be used instead of http
+# https://easyengine.io/tutorials/php/fpm-status-page/
+# phpfpm_exporter_http_endpoint: http://127.0.0.1:9000/status
+# tcp or unix socket unix:///path/to/php.sock
+# phpfpm_exporter_fastcgi_endpoint: tcp://127.0.0.1:9000/status

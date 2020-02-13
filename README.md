@@ -35,8 +35,9 @@ directory for installation
 
 ```yaml
 phpfpm_exporter_http_endpoint: http://127.0.0.1:9000/status
+phpfpm_exporter_fastcgi_endpoint: unix:///path/to/php.sock
 ```
-HTTP endpoint in your webserver. Example for nginx: https://easyengine.io/tutorials/php/fpm-status-page/
+HTTP/FastCGI endpoint. You should define one of this variables. Example for nginx: https://easyengine.io/tutorials/php/fpm-status-page/
 
 
 Dependencies
