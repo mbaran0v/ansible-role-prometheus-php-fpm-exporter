@@ -9,8 +9,13 @@ User={{ phpfpm_exporter_user }}
 Group={{ phpfpm_exporter_group }}
 
 ExecStart={{ deploy_helper.new_release_path }}/{{ phpfpm_exporter_extracted_file }} \
-    --addr {{ phpfpm_exporter_listen_address }}:{{ phpfpm_exporter_listen_port }} \
-    --endpoint {{ phpfpm_exporter_http_endpoint }}
+{% if phpfpm_exporter_http_endpoint is defined %}
+  --endpoint={{ phpfpm_exporter_http_endpoint }} \
+{% endif %}
+{% if phpfpm_exporter_fastcgi_endpoint is defined %}
+  --fastcgi={{ phpfpm_exporter_fastcgi_endpoint }} \
+{% endif %}
+  --addr={{ phpfpm_exporter_listen_address }}:{{ phpfpm_exporter_listen_port }}
 
 SyslogIdentifier=phpfpm_exporter
 Restart=always
