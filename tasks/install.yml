@@ -48,7 +48,6 @@
   get_url:
     url: "{{ phpfpm_exporter_download_url }}"
     dest: "{{ deploy_helper.new_release_path }}/{{ phpfpm_exporter_extracted_file }}"
-    remote_src: true
     checksum: "sha256:{{ phpfpm_exporter_checksum }}"
     owner: "{{ phpfpm_exporter_user }}"
     group: "{{ phpfpm_exporter_group }}"
